@@ -1,0 +1,4 @@
+interface:
+  display_name: "Playwright Auditor"
+  short_description: "Enterprise Playwright audits and test scaffolding"
+  default_prompt: "Use $playwright-auditor to scaffold, run, and report a Playwright audit for my site."
