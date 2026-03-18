@@ -1,4 +1,4 @@
-# skill-Playwright
+# Playwright Auditor Skill
 
 Repositorio orientado a una skill especializada en **Playwright** para automatizar auditorias web, generar pruebas E2E y producir reportes tecnicos listos para analisis o integracion en CI/CD.
 
@@ -16,7 +16,6 @@ No es una aplicacion final para usuarios comunes; es una base de trabajo para cr
 
 ## Contenido principal
 
-- `prompt.md`: prompt de diseño y alcance de la skill.
 - `skills/playwright-auditor/SKILL.md`: instrucciones principales de uso.
 - `skills/playwright-auditor/scripts/`: scripts para instalacion, scaffolding, ejecucion de auditorias y generacion de reportes.
 - `skills/playwright-auditor/references/`: referencias tecnicas, buenas practicas, errores comunes y plantillas de CI/CD.
