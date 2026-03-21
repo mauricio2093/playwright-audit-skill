@@ -26,11 +26,11 @@ reports with AI-generated recommendations.
 | Task | Command |
 |------|---------|
 | Install Playwright | `bash scripts/install.sh` |
-| Fetch docs | `python scripts/fetch_docs.py --all` |
-| Scaffold tests | `python scripts/scaffold_tests.py --url <URL> --scenario <TYPE>` |
+| Fetch docs | `python3 scripts/fetch_docs.py --all` |
+| Scaffold tests | `python3 scripts/scaffold_tests.py --url <URL> --scenario <TYPE>` |
 | Run audit | `bash scripts/run_audit.sh` |
-| Generate report | `python scripts/generate_report.py --input test-results/results.json` |
-| Run isolated audit | `python scripts/run_isolated_audit.py --url <URL> --scenario full` |
+| Generate report | `python3 scripts/generate_report.py --input test-results/results.json` |
+| Run isolated audit | `python3 scripts/run_isolated_audit.py --url <URL> --scenario full` |
 
 Scenario types: `smoke` · `form` · `auth` · `a11y` · `perf` · `visual` · `full`
 
@@ -44,8 +44,13 @@ Useful environment variables:
 ## 1. Environment Detection & Installation
 
 Run `scripts/install.sh` first. It handles Node.js validation, Playwright
-install, and browser binary download. The script is idempotent — safe to
+install, and browser binary download. The script is idempotent and safe to
 run multiple times.
+
+If the audit is for a real external site or a shared project, prefer
+`scripts/run_isolated_audit.py` so the skill installs dependencies in an
+isolated workspace instead of mixing `package.json`, lockfiles, and
+`node_modules` into the current repository.
 
 **Manual install (if preferred):**
 
@@ -72,11 +77,11 @@ for Docker and CI environments.
 Before writing or debugging tests, fetch the latest Playwright docs:
 
 ```bash
-python scripts/fetch_docs.py --all
+python3 scripts/fetch_docs.py --all
 # or fetch a specific section:
-python scripts/fetch_docs.py --section locators
-python scripts/fetch_docs.py --section assertions
-python scripts/fetch_docs.py --section network
+python3 scripts/fetch_docs.py --section locators
+python3 scripts/fetch_docs.py --section assertions
+python3 scripts/fetch_docs.py --section network
 ```
 
 Output is saved to `references/playwright_api_cheatsheet.md`. The script
@@ -91,13 +96,13 @@ Generate test files for any URL and scenario type:
 
 ```bash
 # TypeScript (default)
-python scripts/scaffold_tests.py --url https://example.com --scenario full
+python3 scripts/scaffold_tests.py --url https://example.com --scenario full
 
 # JavaScript
-python scripts/scaffold_tests.py --url https://example.com --scenario smoke --js
+python3 scripts/scaffold_tests.py --url https://example.com --scenario smoke --js
 
 # Page Object Model output (for multi-page suites)
-python scripts/scaffold_tests.py --url https://example.com --scenario full --pom
+python3 scripts/scaffold_tests.py --url https://example.com --scenario full --pom
 ```
 
 Generated files are placed in `tests/`. Each file includes inline comments
@@ -126,7 +131,7 @@ missing selectors.
 bash scripts/run_audit.sh
 ```
 
-This runs `npx playwright test` with JSON, HTML, and Markdown reporters,
+This runs `npx playwright test` with JSON and HTML reporters,
 4 parallel workers, and 2 retries for flaky tests. On failure, it captures
 a full-page screenshot, a video recording, and a Playwright trace zip.
 
@@ -157,13 +162,13 @@ Prefer `scripts/run_isolated_audit.py` for real audits. It:
 Example:
 
 ```bash
-python scripts/run_isolated_audit.py --url https://example.com --scenario full
+python3 scripts/run_isolated_audit.py --url https://example.com --scenario full
 ```
 
 If you also want raw Playwright evidence such as traces, screenshots, videos, and baselines:
 
 ```bash
-python scripts/run_isolated_audit.py --url https://example.com --scenario full --keep-evidence
+python3 scripts/run_isolated_audit.py --url https://example.com --scenario full --keep-evidence
 ```
 
 ---
@@ -171,13 +176,13 @@ python scripts/run_isolated_audit.py --url https://example.com --scenario full -
 ## 5. Generating the Report
 
 ```bash
-python scripts/generate_report.py --input test-results/results.json
+python3 scripts/generate_report.py --input test-results/results.json
 
 # With AI recommendations (calls Claude API)
-python scripts/generate_report.py --input test-results/results.json --ai-recommendations
+python3 scripts/generate_report.py --input test-results/results.json --ai-recommendations
 
 # With screenshots embedded as base64
-python scripts/generate_report.py --input test-results/results.json --embed-screenshots
+python3 scripts/generate_report.py --input test-results/results.json --embed-screenshots
 ```
 
 Output: `audit-report-{TIMESTAMP}.md`

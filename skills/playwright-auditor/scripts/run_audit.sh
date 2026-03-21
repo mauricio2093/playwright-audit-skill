@@ -2,7 +2,7 @@
 # =============================================================================
 # run_audit.sh — Playwright Audit Runner
 # =============================================================================
-# Executes the full Playwright test suite with JSON, HTML, and list reporters.
+# Executes the full Playwright test suite with JSON and HTML reporters.
 # Captures screenshots, videos, and traces on failure. Supports tag-based
 # filtering and multi-browser overrides.
 #
@@ -36,7 +36,6 @@ WORKERS=4
 RETRIES=2
 BASE_URL="${BASE_URL:-}"
 NO_OPEN=false
-TIMESTAMP=$(date +%Y%m%d_%H%M%S)
 RESULTS_DIR="test-results"
 REPORT_DIR="playwright-report"
 
@@ -80,18 +79,18 @@ success "Pre-flight checks passed"
 # ── Build command ─────────────────────────────────────────────────────────────
 mkdir -p "$RESULTS_DIR"
 
-CMD="npx playwright test"
-CMD+=" --workers=$WORKERS"
-CMD+=" --retries=$RETRIES"
-CMD+=" --output=$RESULTS_DIR"
+CMD=(npx playwright test)
+CMD+=("--workers=$WORKERS")
+CMD+=("--retries=$RETRIES")
+CMD+=("--output=$RESULTS_DIR")
 
 if [[ -n "$TAG" ]]; then
-  CMD+=" --grep='$TAG'"
+  CMD+=("--grep=$TAG")
   log "Tag filter: $TAG"
 fi
 
 if [[ -n "$BROWSER" ]]; then
-  CMD+=" --project=$BROWSER"
+  CMD+=("--project=$BROWSER")
   log "Browser: $BROWSER"
 fi
 
@@ -108,13 +107,14 @@ fi
 # ── Run the tests ─────────────────────────────────────────────────────────────
 echo ""
 log "Starting Playwright audit — $(date '+%Y-%m-%d %H:%M:%S')"
-log "Command: $CMD"
+printf -v CMD_LOG '%q ' "${CMD[@]}"
+log "Command: ${CMD_LOG% }"
 echo ""
 echo "─────────────────────────────────────────────"
 
 START_TIME=$(date +%s%3N)
 set +e
-eval "$CMD"
+"${CMD[@]}"
 EXIT_CODE=$?
 set -e
 END_TIME=$(date +%s%3N)
@@ -184,7 +184,7 @@ fi
 
 echo ""
 if [[ -f "$RESULTS_JSON" ]]; then
-  log "Generate report: python scripts/generate_report.py --input $RESULTS_JSON"
+  log "Generate report: python3 scripts/generate_report.py --input $RESULTS_JSON"
 fi
 
 # Return Playwright's exit code so CI pipelines detect failures
